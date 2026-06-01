@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions, Secret } from 'jsonwebtoken';
 import { env } from '../config/env';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -6,7 +6,7 @@ export interface JWTPayload {
   userId: string;
   email: string;
   type: 'access' | 'refresh';
-  jti: string; // JWT ID for refresh token tracking
+  jti: string;
 }
 
 export const generateAccessToken = (userId: string, email: string): string => {
@@ -17,8 +17,9 @@ export const generateAccessToken = (userId: string, email: string): string => {
     jti: uuidv4(),
   };
 
-  return jwt.sign(payload, env.JWT_SECRET, {
-    expiresIn: env.JWT_EXPIRES_IN,
+  // CORREÇÃO: Cast para Secret e SignOptions['expiresIn']
+  return jwt.sign(payload, env.JWT_SECRET as Secret, {
+    expiresIn: env.JWT_EXPIRES_IN as SignOptions['expiresIn'],
   });
 };
 
@@ -30,14 +31,16 @@ export const generateRefreshToken = (userId: string, email: string): string => {
     jti: uuidv4(),
   };
 
-  return jwt.sign(payload, env.JWT_REFRESH_SECRET, {
-    expiresIn: env.JWT_REFRESH_EXPIRES_IN,
+  // CORREÇÃO: Cast para Secret e SignOptions['expiresIn']
+  return jwt.sign(payload, env.JWT_REFRESH_SECRET as Secret, {
+    expiresIn: env.JWT_REFRESH_EXPIRES_IN as SignOptions['expiresIn'],
   });
 };
 
 export const verifyToken = (token: string, secret: string): JWTPayload => {
   try {
-    const decoded = jwt.verify(token, secret) as JWTPayload;
+    // CORREÇÃO: Cast para Secret
+    const decoded = jwt.verify(token, secret as Secret) as JWTPayload;
     return decoded;
   } catch (error) {
     throw new Error('Invalid or expired token');
