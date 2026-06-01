@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 export interface User {
   id: string;
   nome: string;
@@ -6,12 +8,17 @@ export interface User {
   is_active: boolean;
   created_at: Date;
   last_login_at?: Date;
+  // Adicione aqui outros campos do banco se necessário
+  password_hash?: string; // Geralmente não expomos, mas útil para interfaces internas
+  pin_hash?: string;
+  failed_login_attempts?: number;
+  locked_until?: Date;
 }
 
 export interface Wallet {
   id: string;
   user_id: string;
-  balance: string;
+  balance: string; // Use string para precisão decimal
   created_at: Date;
   updated_at: Date;
 }
@@ -58,6 +65,9 @@ export interface JwtPayload {
   jti: string;
 }
 
+// CORREÇÃO CRÍTICA:
+// Importamos Request do Express e estendemos aqui.
+// Isso garante que req.query, req.params, etc., existam.
 export interface AuthRequest extends Request {
-  user?: JwtPayload;
+  user: JwtPayload; // Removido o '?' pois o middleware garante a existência
 }
