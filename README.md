@@ -1,1 +1,1 @@
-# wallet-bc-
+# wallet pay
