@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url = env("DATABASE_URL")
 }
 
 enum Role {
@@ -25,49 +25,50 @@ enum TransactionStatus {
 }
 
 model User {
-  id                 String   @id @default(uuid())
-  name               String
-  email              String   @unique
-  password           String
-  role               Role     @default(USER)
-  isActive           Boolean  @default(true)
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  role Role @default(USER)
+  isActive Boolean @default(true)
   resetPasswordToken String?
   resetPasswordExpires DateTime?
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-  wallet             Wallet?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  wallet Wallet?
 }
 
 model Admin {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      Role     @default(ADMIN)
-  isActive  Boolean  @default(true)
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  role Role @default(ADMIN)
+  isActive Boolean @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Wallet {
-  id        String   @id @default(uuid())
-  balance   Decimal  @default(0) @db.Decimal(15, 2)
-  userId    String   @unique
+  id String @id @default(uuid())
+  balance Decimal @default(0) @db.Decimal(15, 2)
+  userId String @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  sent      Transaction[] @relation("SentTransactions")
-  received  Transaction[] @relation("ReceivedTransactions")
+  sent Transaction[] @relation("SentTransactions")
+  received Transaction[] @relation("ReceivedTransactions")
 }
 
 model Transaction {
-  id          String   @id @default(uuid())
-  type        TransactionType
-  amount      Decimal  @db.Decimal(15, 2)
+  id String @id @default(uuid())
+  type TransactionType
+  amount Decimal @db.Decimal(15, 2)
   description String?
-  status      TransactionStatus @default(COMPLETED)
-  fromId      String?
-  from        Wallet?  @relation("SentTransactions", fields: [fromId], references: [id], onDelete: SetNull)
-  toId        String?
-  to          Wallet?  @relation("ReceivedTransactions", fields: [toId], references: [id], onDelete: SetNull)
-  createdAt   DateTime @default(now())
+  status TransactionStatus @default(COMPLETED)
+  fromId String?
+  from Wallet? @relation("SentTransactions", fields: [fromId], references: [id], onDelete: SetNull)
+  toId String?
+  to Wallet? @relation("ReceivedTransactions", fields: [toId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
 }
