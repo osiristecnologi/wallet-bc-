@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import { env } from '../config/env';
 import * as userRepo from '../repositories/userRepository';
 import { AppError } from '../utils/appError';
+import { prisma } from '../lib/prisma'; // 
 
 const SALT_ROUNDS = 10;
 
