@@ -5,12 +5,12 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "prisma generate && tsc",
+    "build": "prisma generate --schema=./src/prisma/schema.prisma && tsc",
     "start": "node dist/server.js",
-    "postinstall": "prisma generate",
-    "prisma:migrate": "npx prisma migrate dev",
-    "prisma:push": "npx prisma db push",
-    "prisma:studio": "npx prisma studio"
+    "postinstall": "prisma generate --schema=./src/prisma/schema.prisma",
+    "prisma:migrate": "npx prisma migrate dev --schema=./src/prisma/schema.prisma",
+    "prisma:push": "npx prisma db push --schema=./src/prisma/schema.prisma",
+    "prisma:studio": "npx prisma studio --schema=./src/prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",
@@ -35,12 +35,8 @@
     "prisma": "^5.10.0",
     "tsx": "^4.7.1",
     "typescript": "^5.3.3"
-  "scripts": {
-  "build": "prisma generate --schema=./src/prisma/schema.prisma && tsc",
-  "start": "node dist/server.js",
-  "postinstall": "prisma generate --schema=./src/prisma/schema.prisma"
-},
-"prisma": {
-  "schema": "src/prisma/schema.prisma"
-}  
-
+  },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
+  }
+}
